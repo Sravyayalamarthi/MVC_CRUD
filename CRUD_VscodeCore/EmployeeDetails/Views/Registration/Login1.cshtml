@@ -1,0 +1,42 @@
+@{
+    ViewBag.Title = "Login";
+}
+
+<h2>Login</h2>
+<link href="~/css/jquery.dataTables.min.css" rel="stylesheet">
+    <script src="~/js/jquery.min.js"></script>
+    <script src="~/js/jquery.dataTables.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+@using (Html.BeginForm("Login1", "Registration", FormMethod.Post))
+{
+    <div>
+        <label for="name">Name:</label>
+        <input type="text" id="name" name="name" required />
+    </div>
+    <div>
+        <label for="phone">Phone:</label>
+        <input type="text" id="phone" name="phone" required />
+    </div>
+    <button type="submit">Login</button>
+}
+
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: 'Error',
+            text: "@TempData["ErrorMessage"]",
+            icon: 'error'
+        });
+    </script>
+}
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: 'Success',
+            text: "@TempData["SuccessMessage"]",
+            icon: 'success'
+        });
+    </script>
+}

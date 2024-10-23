@@ -1,0 +1,405 @@
+﻿<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>GIS Shape File Example</title>
+    <link href="~/css/leaflet.css" rel="stylesheet" />
+    <link href="~/css/leaflet-routing-machine.css" rel="stylesheet" />
+   
+    <style>
+          body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #f4f4f4;
+        }
+        .card {
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 26rem;
+            margin: auto;
+        }
+        .card-map{
+            background: white;
+            border-radius: 8px;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1);
+            padding: 20px;
+            height: 25rem;
+            margin: auto;
+        }
+        #map {
+            height: 400px;
+            width: 100%;
+            margin-bottom: 20px;
+        }
+        .row {
+            display: flex;
+            flex-wrap: wrap;
+            margin: -10px;
+        }
+        .col-3, .col-6 {
+            padding: 10px;
+            flex: 1 1 100%; /* Default to full width */
+        }
+        @@media (min-width: 600px) {
+            .col-3 {
+                flex: 1 1 33%; /* 3 columns on larger screens */
+            }
+            .col-6 {
+                flex: 1 1 66%; /* 2 columns on larger screens */
+            }
+        }
+        input {
+           /*  width: 80%; */
+            padding: 10px;
+            margin: 5px 0;
+            border: 1px solid #ccc;
+            border-radius: 4px;
+        }
+        button {
+            background-color: #007bff;
+            color: white;
+            border: none;
+            cursor: pointer;
+            width: 150px;
+            padding: 10px;
+        }
+        button:hover {
+            background-color: #0056b3;
+         }
+        #disLocation {
+            display: none;
+        }
+        #disMileage {
+            display: none;
+        }
+    </style>
+</head>
+<body>
+    <h1 style="text-align: center;">GIS Shape File Example</h1>
+    <div class="row" style="margin-bottom: 10px;">
+        <div class="col-3 mb-3">
+            <div class="card" >
+                <h5 style="text-align: center;">
+                    Upload Shape File</h1>
+                    <input type="file" id="shapefile" accept=".shp,.zip" />
+                    <button id="upload">Upload Shapefile</button>
+            </div>
+        </div>
+
+        <div class="col-3 mb-3">
+
+            <div id="disLocation">
+
+                <div class="card">
+                    <h5 style="text-align: center;">
+                        Distance Check</h1>
+                        From:
+                        <select id="fromLocation">
+                            <option value="16.5062,80.6480">Vijayawada</option>
+                            <option value="16.1920,81.1316">Machilipatnam</option>
+                        </select>
+                        To:
+                        <select id="toLocation">
+                            <option value="16.1920,81.1316">Machilipatnam</option>
+                            <option value="16.5062,80.6480">Vijayawada</option>
+                        </select>
+                        <br />
+                        <button id="chkDistance">Check Distance</button>
+                        <div id="result" style="margin-top: 10px;"></div>
+                </div>
+            </div>
+        </div>
+
+        <div class="col-6 mb-3">
+            <div id="disMileage">
+
+                <div class="card">
+                    <h5 style="text-align: center;">
+                        Mileage Check</h1>
+                        <div class="form-horizontal fuelcostform" id="fuelcostform">
+                            <div class="row form-group lamount ">
+                                <div class="col-xs-12 col-md-6 text-align">
+                                    <div class="col-xs-12 col-md-12 boxpadding">
+                                        <div class="col-xs-12 col-md-2 m-t10 labelCenter">
+                                            <label class="labelInput" for="exampleInputName2">Distance:</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-6 boxpadding">
+                                            <div id="chkresult" style="margin-top: 10px;"></div>
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xs-12 col-md-12 m-t10 boxpadding">
+                                        <div class="col-xs-12 col-md-2 m-t20 labelCenter">
+                                            <label class="labelInput" for="exampleInputName2">Fuel</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-6  boxpadding boxmargin">
+                                            <input type="number" class="form-control input-mb10 h40" id="fuel" onkeyup="mileage()" placeholder="liter">
+                                        </div>
+
+                                    </div>
+                                    <div class="col-xs-12 col-md-12 m-t10 extra-m-b20 boxpadding">
+                                        <div class="col-xs-12 col-md-2 m-t20 labelCenter">
+                                            <label class="labelInput" for="exampleInputName2">Price</label>
+                                        </div>
+                                        <div class="col-xs-12 col-md-6 boxpadding boxmargin">
+                                            <input type="number" class="form-control input-mb10 h40" id="cost" pattern="[0-9]+" value="109.58" onkeyup="mileage()">
+                                        </div>
+                                    </div>
+                                    <div class="calcBtnBox" style="text-align:center">
+                                        <button type="button" onclick="mileage()" class="btn mainBtn site-button yellow m-t10" style="letter-spacing: 1px;font-weight: 600;">Calculate</button>
+                                        <button type="button" onclick="resetFields()" class="btn mainBtn site-button yellow m-t10" style="letter-spacing: 1px;font-weight: 600;">Reset</button>
+                                    </div>
+                                </div>
+                                <div class="col-xs-12 col-md-6 text-align">
+                                    <div class="table-responsive marginTop">
+                                        <table class="table table-bordered">
+                                            <thead class="dataTblHead">
+                                                <tr>
+                                                    <th>Units</th>
+                                                    <th>Output</th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <tr>
+                                                    <td>Distance</td>
+                                                    <td>
+                                                        <span id="Total_dist">-</span>
+                                                        <b><span id="distance_Unit"></span></b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Fuel</td>
+                                                    <td>
+                                                        <span id="Total_Fuel">-</span>
+                                                        <b><span id="fuelUnit"></span></b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Total Amount</td>
+                                                    <td>
+                                                        <span id="Total_Amt">-</span>
+                                                        <b><span id="currency_Unit"></span></b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td>Fuel Cost Per Kilometer</td>
+                                                    <td>
+                                                        <span id="fuelExpense">-</span>
+                                                        <b><span id="distancePerUnit"></span></b>
+                                                    </td>
+                                                </tr>
+                                                <tr>
+                                                    <td colspan="2" class="text-center f18">
+                                                        <b>Mileage: <span id="mileageResult">0</span></b>
+                                                    </td>
+                                                </tr>
+                                            </tbody>
+                                        </table>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    <div class="card-map">
+        <div id="map"></div>
+    </div>
+
+
+
+   
+    <script src="~/js/leaflet.js"></script>
+    <script src="~/js/shapefile.min.js"></script>
+    <script src="~/js/leaflet-routing-machine.js"></script>
+   @*  <script>
+        function mileage() {
+            // Get the distance and fuel input values
+            const distance = parseFloat(document.getElementById('chkresult').innerText);
+            const fuel = parseFloat(document.getElementById('fuel').value);
+            const price = parseFloat(document.getElementById('cost').value);
+
+            if (!distance || !fuel || !price) {
+                alert("Please enter valid values for distance, fuel, and price.");
+                return;
+            }
+
+            // Calculate total fuel cost
+            const totalFuelCost = fuel * price;
+            document.getElementById('Total_Amt').innerText = totalFuelCost.toFixed(2);
+            document.getElementById('currency_Unit').innerText = "₹"; // Assuming currency in INR
+
+            // Calculate fuel cost per kilometer
+            const fuelCostPerKilometer = totalFuelCost / distance;
+            document.getElementById('fuelExpense').innerText = fuelCostPerKilometer.toFixed(2);
+            document.getElementById('distancePerUnit').innerText = "₹/km";
+
+            // Calculate mileage (distance per liter of fuel)
+            const mileageValue = distance / fuel;
+            document.getElementById('mileageResult').innerText = mileageValue.toFixed(2);
+        }
+
+        function resetFields() {
+            document.getElementById('fuel').value = "";
+            document.getElementById('cost').value = "109.58"; // Default price
+            document.getElementById('Total_Amt').innerText = "-";
+            document.getElementById('fuelExpense').innerText = "-";
+            document.getElementById('mileageResult').innerText = "0";
+        }
+    </script> *@
+    <script>
+        function mileage() {
+            // Get the distance from the distance check result (chkresult)
+            const distance = parseFloat(document.getElementById('chkresult').innerText);
+            const fuel = parseFloat(document.getElementById('fuel').value);
+            const price = parseFloat(document.getElementById('cost').value);
+
+            if (isNaN(distance) || isNaN(fuel) || isNaN(price)) {
+                alert("Please enter valid values for distance, fuel, and price.");
+                return;
+            }
+
+            // Update displayed distance
+            document.getElementById('Total_dist').innerText = distance.toFixed(2);
+            document.getElementById('distance_Unit').innerText = "km"; // Distance in kilometers
+
+            // Update displayed fuel
+            document.getElementById('Total_Fuel').innerText = fuel.toFixed(2);
+            document.getElementById('fuelUnit').innerText = "L"; // Fuel in liters
+
+            // Calculate total fuel cost
+            const totalFuelCost = fuel * price;
+            document.getElementById('Total_Amt').innerText = totalFuelCost.toFixed(2);
+            document.getElementById('currency_Unit').innerText = "₹"; // Assuming currency in INR
+
+            // Calculate fuel cost per kilometer
+            const fuelCostPerKilometer = totalFuelCost / distance;
+            document.getElementById('fuelExpense').innerText = fuelCostPerKilometer.toFixed(2);
+            document.getElementById('distancePerUnit').innerText = "₹/km";
+
+            // Calculate mileage (distance per liter of fuel)
+            const mileageValue = distance / fuel;
+            document.getElementById('mileageResult').innerText = mileageValue.toFixed(2);
+        }
+
+        function resetFields() {
+            document.getElementById('fuel').value = "";
+            document.getElementById('cost').value = "109.58"; // Reset default price
+            document.getElementById('chkresult').innerText = "-"; // Reset distance
+            document.getElementById('Total_dist').innerText = "-";
+            document.getElementById('Total_Fuel').innerText = "-";
+            document.getElementById('Total_Amt').innerText = "-";
+            document.getElementById('fuelExpense').innerText = "-";
+            document.getElementById('mileageResult').innerText = "0";
+        }
+    </script>
+
+
+    <script>
+        // Create a map and set its view to a specific location and zoom level
+        const map = L.map('map').setView([16.5062, 80.6480], 13); // Example coordinates for Vijayawada
+
+        // Add OpenStreetMap tile layer
+        L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
+            maxZoom: 19,
+        }).addTo(map);
+
+        // Variable to hold the current GeoJSON layer
+        let currentGeoJsonLayer = null;
+        let routingControl = null; // Variable to hold the routing control
+
+        // Function to handle file upload
+        document.getElementById('upload').addEventListener('click', () => {
+            const fileInput = document.getElementById('shapefile');
+            const file = fileInput.files[0];
+
+            if (!file) {
+                alert('Please select a shapefile to upload.');
+                return;
+            }
+
+            // Read the shapefile
+            const reader = new FileReader();
+            reader.onload = function(event) {
+                const data = new Uint8Array(event.target.result);
+
+                // Use shapefile library to open the shapefile
+                shapefile.read(data)
+                    .then(geojson => {
+                        console.log(geojson); // Log the GeoJSON structure
+
+                        // Remove the existing GeoJSON layer if it exists
+                        if (currentGeoJsonLayer) {
+                            map.removeLayer(currentGeoJsonLayer);
+                        }
+
+                        // Create a new GeoJSON layer
+                        currentGeoJsonLayer = L.geoJSON(geojson, {
+                            style: {
+                                color: 'black', // Track color
+                          weight: 4, // Line thickness
+                          dashArray: '10, 5', // Dashed line pattern
+                    fill: false // No fill for railway tracks
+                            }
+                        }).addTo(map);
+
+                        // Check and log the bounds
+                        const bounds = currentGeoJsonLayer.getBounds();
+                        console.log("Bounds:", bounds); // Log bounds for debugging
+
+                        // Fit the map to the bounds of the loaded GeoJSON
+                        map.fitBounds(bounds);
+
+                        // Show the dropdowns for location selection
+                        document.getElementById('disLocation').style.display = 'block';
+                        document.getElementById('disMileage').style.display = 'block';
+
+                    })
+                    .catch(error => {
+                        console.error(error);
+                        alert('Error reading shapefile: ' + error.message);
+                    });
+            };
+
+            // Read the shapefile as an array buffer
+            reader.readAsArrayBuffer(file);
+        });
+
+        // Check distance button functionality
+        document.getElementById('chkDistance').addEventListener('click', () => {
+            const from = document.getElementById('fromLocation').value.split(',');
+            const to = document.getElementById('toLocation').value.split(',');
+
+            const fromLatLng = L.latLng(from[0], from[1]);
+            const toLatLng = L.latLng(to[0], to[1]);
+
+            // Remove the existing routing control if it exists
+            if (routingControl) {
+                map.removeControl(routingControl);
+            }
+
+            // Create a new routing control
+            routingControl = L.Routing.control({
+                waypoints: [
+                    fromLatLng,
+                    toLatLng
+                ],
+                routeWhileDragging: true
+            }).addTo(map);
+             // Listen for routing result to calculate distance
+        routingControl.on('routesfound', function(e) {
+            const route = e.routes[0];
+            const distance = route.summary.totalDistance; // in meters
+            document.getElementById('result').innerText = `Distance: ${(distance / 1000).toFixed(2)} km`;
+            document.getElementById('chkresult').innerText = (distance / 1000).toFixed(2);
+
+        });
+        });
+    </script>  
+</body>
+</html>

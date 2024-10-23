@@ -1,0 +1,104 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Login Form</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .form-container {
+            max-width: 400px;
+            margin: auto;
+            padding: 20px;
+            border: 1px solid #ccc;
+            border-radius: 10px;
+            background-color: #f9f9f9;
+        }
+
+        .form-container h2 {
+            text-align: center;
+        }
+
+        .form-group {
+            margin-bottom: 15px;
+        }
+
+        .form-group label {
+            display: block;
+            margin-bottom: 5px;
+        }
+
+        .form-group input[type="email"],
+        .form-group input[type="password"] {
+            width: 100%;
+            padding: 8px;
+            border: 1px solid #ccc;
+            border-radius: 5px;
+        }
+
+        .submit-btn {
+            display: block;
+            width: 100%;
+            padding: 10px;
+            background-color: #28a745;
+            border: none;
+            color: white;
+            font-size: 16px;
+            cursor: pointer;
+            border-radius: 5px;
+        }
+
+        .submit-btn:hover {
+            background-color: #218838;
+        }
+    </style>
+</head>
+<script src="~/js/sweetalert2@10.js"></script>
+
+<body>
+
+    <div class="form-container">
+        <h2>Login</h2>
+        <form method="post" asp-action="Login" asp-controller="Registration">
+            <div class="form-group">
+                <label for="EmailID">Email ID:</label>
+                <input type="email" id="EmailID" name="EmailID" required>
+            </div>
+            <div class="form-group">
+                <label for="Password">Password:</label>
+                <input type="password" id="Password" name="Password" required>
+            </div>
+            <button type="submit" class="submit-btn">Login</button>
+            <span>
+                If not registered, <a href="@Url.Action("Registration", "Registration")">click here</a>.
+            </span>
+        </form>
+    </div>
+
+</body>
+@if (TempData["SuccessMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: 'Success',
+            text: "@TempData["SuccessMessage"]",
+            icon: 'success'
+        });
+    </script>
+}
+@if (TempData["ErrorMessage"] != null)
+{
+    <script>
+        Swal.fire({
+            title: 'Error',
+            text: "@TempData["ErrorMessage"]",
+            icon: 'error'
+        });
+    </script>
+}
+
+</html>

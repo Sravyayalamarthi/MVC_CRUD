@@ -1,0 +1,33 @@
+@model List<EmployeeDetails.Models.AQIModel>
+
+<h2>AQI Map for Andhra Pradesh</h2>
+<div id="map" style="width: 100%; height: 500px;"></div>
+
+<script src="https://maps.googleapis.com/maps/api/js?key=AIzaSyDE6c8ZwCcwJwRHPmw0q9jM93iyIZMYMR8"></script>
+<script>
+    function initMap() {
+        var map = new google.maps.Map(document.getElementById('map'), {
+            zoom: 7,
+            center: { lat: 16.5, lng: 80.6 } // Center of Andhra Pradesh
+        });
+
+        @foreach (var item in Model)
+        {
+            <text>
+                var marker = new google.maps.Marker({
+                    position: { lat: @item.Latitude, lng: @item.Longitude },
+                    map: map,
+                    title: '@item.Location AQI: @item.AQIValue'
+                });
+                var infowindow = new google.maps.InfoWindow({
+                    content: '@item.Location AQI: @item.AQIValue'
+                });
+                marker.addListener('click', function () {
+                    infowindow.open(map, marker);
+                });
+            </text>
+        }
+    }
+
+    initMap();
+</script>

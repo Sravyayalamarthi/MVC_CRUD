@@ -1,0 +1,22 @@
+﻿@{
+    ViewData["Title"] = "Ask a Question";
+}
+
+<h2>Ask a Question Related to the PDF Content</h2>
+
+<form method="post">
+    <div>
+        <label for="question">Ask a question:</label>
+        <input type="text" name="question" placeholder="Enter your question..." />
+    </div>
+    <div>
+        <button type="submit">Submit Question</button>
+    </div>
+</form>
+
+@if (ViewBag.Answer != null)
+{
+    <div>
+        <p><strong>Answer:</strong> @ViewBag.Answer</p>
+    </div>
+}

@@ -1,0 +1,10 @@
+E:\CRUD_VscodeCore\DAL\bin\Debug\netcoreapp3.1\DAL.deps.json
+E:\CRUD_VscodeCore\DAL\bin\Debug\netcoreapp3.1\DAL.dll
+E:\CRUD_VscodeCore\DAL\bin\Debug\netcoreapp3.1\DAL.pdb
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.csproj.AssemblyReference.cache
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.GeneratedMSBuildEditorConfig.editorconfig
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.AssemblyInfoInputs.cache
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.AssemblyInfo.cs
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.csproj.CoreCompileInputs.cache
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.dll
+E:\CRUD_VscodeCore\DAL\obj\Debug\netcoreapp3.1\DAL.pdb
